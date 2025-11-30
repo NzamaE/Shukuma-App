@@ -1,0 +1,337 @@
+﻿@model List<shukuma.domain.Models.WorkoutSession>
+
+@{
+    ViewData["Title"] = "Workout History";
+    ViewData["IsSignedIn"] = "true";
+    var userName = ViewData["UserName"]?.ToString() ?? "User";
+}
+
+<style>
+    .history-container {
+        background: #F5F5F5;
+        min-height: 100vh;
+        padding: 30px 15px;
+    }
+
+    .history-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 40px;
+    }
+
+        .history-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+    .history-content {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        text-align: center;
+    }
+
+    .summary-icon {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+    }
+
+    .summary-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+        display: block;
+    }
+
+    .summary-label {
+        color: #666;
+        font-size: 0.95rem;
+        margin-top: 5px;
+    }
+
+    .workout-list {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+        .workout-list h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+        }
+
+    .workout-item {
+        display: grid;
+        grid-template-columns: auto 1fr auto auto;
+        gap: 20px;
+        align-items: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+    }
+
+        .workout-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+    .workout-icon {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .workout-details {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .workout-date {
+        font-weight: bold;
+        color: #333;
+        font-size: 1.1rem;
+    }
+
+    .workout-time-info {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .workout-stats {
+        text-align: right;
+    }
+
+    .cards-badge {
+        background: #667eea;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+
+    .time-badge {
+        background: #28a745;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .completion-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+    }
+
+    .complete {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .incomplete {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #666;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .empty-message {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
+
+    .btn-start-workout {
+        display: inline-block;
+        padding: 15px 30px;
+        background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-start-workout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+    .btn-back {
+        display: inline-block;
+        padding: 12px 24px;
+        background: white;
+        color: #667eea;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-top: 20px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-back:hover {
+            background: #f8f9fa;
+            color: #764ba2;
+        }
+
+    @@media (max-width: 768px) {
+        .workout-item {
+            grid-template-columns: 1fr;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .workout-icon {
+            margin: 0 auto;
+        }
+
+        .workout-stats {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="history-container">
+    <div class="history-header">
+        <h1>📊 Workout History</h1>
+        <p>Track your fitness journey, @userName</p>
+    </div>
+
+    <div class="history-content">
+        @if (Model.Any())
+        {
+            <!-- Summary Cards -->
+            <div class="summary-cards">
+                <div class="summary-card">
+                    <div class="summary-icon">🏋️</div>
+                    <span class="summary-value">@Model.Count(w => w.IsCompleted)</span>
+                    <p class="summary-label">Total Workouts</p>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-icon">🎴</div>
+                    <span class="summary-value">@Model.Sum(w => w.CardsCompleted)</span>
+                    <p class="summary-label">Total Cards</p>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-icon">⏱️</div>
+                    <span class="summary-value">
+                        @(Model.Where(w => w.IsCompleted).Any()
+                                            ? Model.Where(w => w.IsCompleted).OrderBy(w => w.TimeElapsed).First().TimeElapsed
+                                            : "N/A")
+                    </span>
+                    <p class="summary-label">Best Time</p>
+                </div>
+
+                <div class="summary-card">
+                    <div class="summary-icon">🏆</div>
+                    <span class="summary-value">@Model.Count(w => w.CardsCompleted == 52)</span>
+                    <p class="summary-label">52-Card Completions</p>
+                </div>
+            </div>
+
+            <!-- Workout List -->
+            <div class="workout-list">
+                <h2>📅 Recent Workouts</h2>
+
+                @foreach (var workout in Model.OrderByDescending(w => w.StartedAt))
+                {
+                    <div class="workout-item">
+                        <div class="workout-icon">
+                            @(workout.IsCompleted ? "✅" : "⏸️")
+                        </div>
+
+                        <div class="workout-details">
+                            <span class="workout-date">
+                                @workout.StartedAt.ToString("MMMM dd, yyyy")
+                            </span>
+                            <span class="workout-time-info">
+                                Started at @workout.StartedAt.ToString("hh:mm tt")
+                                @if (workout.CompletedAt.HasValue)
+                                {
+                                    <span> • Completed at @workout.CompletedAt.Value.ToString("hh:mm tt")</span>
+                                }
+                            </span>
+                        </div>
+
+                        <div class="workout-stats">
+                            <div class="cards-badge">
+                                🎴 @workout.CardsCompleted / 52
+                            </div>
+                            @if (workout.IsCompleted)
+                            {
+                                <div class="time-badge">
+                                    ⏱️ @workout.TimeElapsed
+                                </div>
+                            }
+                        </div>
+
+                        <div>
+                            <span class="completion-badge @(workout.IsCompleted ? "complete" : "incomplete")">
+                                @(workout.IsCompleted ? "✓ Complete" : "⏸ In Progress")
+                            </span>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <!-- Empty State -->
+            <div class="workout-list">
+                <div class="empty-state">
+                    <div class="empty-icon">🏋️</div>
+                    <p class="empty-message">No workouts yet! Start your fitness journey today.</p>
+                    <a href="@Url.Action("Exercise", "Profile")" class="btn-start-workout">
+                        💪 Start Your First Workout
+                    </a>
+                </div>
+            </div>
+        }
+
+        <div style="text-align: center;">
+            <a href="@Url.Action("Dashboard", "Profile")" class="btn-back">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,551 @@
+﻿@model shukuma.domain.Models.UserModel
+@using System.Diagnostics;
+
+@{
+    ViewData["Title"] = "Exercise";
+    ViewData["IsSignedIn"] = "true";
+}
+
+<style>
+    .workout-container {
+        background: #F5F5F5;
+        min-height: 100vh;
+        padding: 30px 15px;
+    }
+
+    .workout-header {
+        text-align: center;
+        color: white;
+        margin-bottom: 30px;
+    }
+
+        .workout-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .workout-header p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+    .workout-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    @@media (max-width: 992px) {
+        .workout-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .workout-header h1 {
+            font-size: 2rem;
+        }
+    }
+
+    .workout-card {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+
+    .stats-bar {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 25px;
+        padding: 20px;
+        background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%);
+        border-radius: 15px;
+        color: white;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: bold;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-top: 5px;
+    }
+
+    .progress-enhanced {
+        height: 30px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        background: #e0e0e0;
+    }
+
+    .progress-bar-enhanced {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 0.9rem;
+        transition: width 0.5s ease, background-color 0.3s ease;
+    }
+
+    .progress-hint {
+        text-align: center;
+        color: #667eea;
+        font-style: italic;
+        margin-bottom: 20px;
+        animation: pulse 2s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 0.6;
+        }
+
+        50% {
+            opacity: 1;
+        }
+    }
+
+    .card-display-wrapper {
+        perspective: 1000px;
+        margin-bottom: 25px;
+    }
+
+    .card-image-container {
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+        .card-image-container:hover {
+            transform: scale(1.02);
+        }
+
+        .card-image-container.flipping {
+            animation: cardFlip 0.6s ease;
+        }
+
+    @@keyframes cardFlip {
+        0% {
+            transform: rotateY(0deg);
+        }
+
+        50% {
+            transform: rotateY(90deg) scale(1.05);
+        }
+
+        100% {
+            transform: rotateY(0deg);
+        }
+    }
+
+    .card-image-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .btn-enhanced {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        font-weight: bold;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .btn-enhanced:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn-enhanced:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+    .btn-start {
+        background: linear-gradient(135deg, #FFD700 0%, #FFC107 100%);
+        color: white;
+    }
+
+    .btn-pause {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .btn-resume {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-finish {
+        background: #dc3545;
+        color: white;
+    }
+
+    .tutorial-header {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 1.5rem;
+    }
+
+    .video-wrapper {
+        border-radius: 15px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    }
+
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+        }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 500px;
+        text-align: center;
+        animation: slideIn 0.4s ease;
+        margin: 0 15px;
+    }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal-content h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+    }
+
+    .modal-content p {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 15px;
+    }
+
+    .hidden {
+        display: none !important;
+    }
+</style>
+
+<!-- Welcome Modal -->
+<div id="welcomeModal" class="modal-overlay">
+    <div class="modal-content">
+        <h2>🎉 Welcome to Shukuma!</h2>
+        <p>Get ready for an amazing workout experience, <strong>@Model.FirstName</strong>!</p>
+        <p>Tap on each card to complete the exercise, and track your progress in real-time.</p>
+        <p><strong>💡 Tip:</strong> Watch the tutorial video for guidance on each exercise!</p>
+        <button class="btn-enhanced btn-start" onclick="closeModal()">Let's Get Started! 💪</button>
+    </div>
+</div>
+
+<div class="workout-container">
+    <div class="workout-header">
+        <h1>💪 Shukuma Workout</h1>
+        <p>Let's Exercise Together, <strong>@Model.FirstName</strong></p>
+    </div>
+
+    <form id="exercise" asp-action="Completed">
+        <input type="hidden" asp-for="Id" value="@Model.Id" id="userId">
+        <input type="hidden" asp-for="FirstName" value="@Model.FirstName" id="firstName">
+        <input type="hidden" asp-for="EmailAddress" value="@Model.EmailAddress" id="email">
+        <input type="hidden" asp-for="CardsCompleted" value="" id="cardsCompletedV">
+        <input type="hidden" asp-for="TimeCompleted" value="" id="timeCompletedV">
+
+        <div class="workout-grid">
+            <!-- Card Section -->
+            <div class="workout-card">
+                <!-- Stats Bar -->
+                <div class="stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-value" id="stopwatch">00:00:00</span>
+                        <span class="stat-label">⏱ Time</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value"><span id="cardsCompleted">0</span>/52</span>
+                        <span class="stat-label">🎴 Cards</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-enhanced">
+                    <div id="progress" class="progress-bar-enhanced progress-bar-striped progress-bar-animated bg-danger"
+                         role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                        0%
+                    </div>
+                </div>
+                <p class="progress-hint">👆 Tap card to complete exercise</p>
+
+                <!-- Card Display -->
+                <div class="card-display-wrapper">
+                    <div class="card-image-container" id="cardContainer" onclick="nextCard()">
+                        <img id="displayCard" src="../cards/14.jpg" alt="Exercise Card">
+                    </div>
+                </div>
+
+                <!-- Control Buttons -->
+                <button id="startBtn" class="btn-enhanced btn-start" type="button" onclick="startExercise(), start(true)">
+                    ▶ Start Workout
+                </button>
+                <button id="pauseBtn" class="btn-enhanced btn-pause" type="button" onclick="pause()" disabled>
+                    ⏸ Pause
+                </button>
+                <button id="resumeBtn" class="btn-enhanced btn-resume" type="button" onclick="start(true)" disabled>
+                    ▶ Resume
+                </button>
+                <button id="finishBtn" class="btn-enhanced btn-finish" type="submit" disabled>
+                    🏁 Finish Workout
+                </button>
+            </div>
+
+            <!-- Tutorial Section -->
+            <div class="workout-card">
+                <h3 class="tutorial-header">📹 Exercise Tutorial</h3>
+                <div class="video-wrapper">
+                    <video id="tutorial" autoplay muted controls controlsList="nodownload nofullscreen">
+                        <source src="../tutorials/v1.mp4" id="tutorialSource" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const cards = Array.from({ length: 52 }, (_, index) => index + 1);
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    function getTutorialNumber(currentCard = 0) {
+        if ([14].includes(currentCard)) {
+            return 'v1';
+        } else if ([41, 42, 43, 44, 45, 46, 47, 48, 49, 50].includes(currentCard)) {
+            return 'v2';
+        } else if ([51, 52, 53].includes(currentCard)) {
+            return 'v3';
+        } else if ([15, 16, 17, 18, 19, 20, 21, 22, 23, 24].includes(currentCard)) {
+            return 'v4';
+        } else if ([25, 26, 27].includes(currentCard)) {
+            return 'v5';
+        } else if ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].includes(currentCard)) {
+            return 'v6';
+        } else if ([13].includes(currentCard)) {
+            return 'v7';
+        } else if ([28, 29, 30, 31, 32, 33, 34, 35, 36, 37].includes(currentCard)) {
+            return 'v9';
+        } else if ([38, 39, 40].includes(currentCard)) {
+            return 'v10';
+        } else {
+            return 'v1';
+        }
+    }
+
+    shuffleArray(cards);
+
+    // Element references
+    var startBtn = document.getElementById("startBtn");
+    var pauseBtn = document.getElementById('pauseBtn');
+    var resumeBtn = document.getElementById('resumeBtn');
+    var finishBtn = document.getElementById('finishBtn');
+    var stopwatch = document.getElementById("stopwatch");
+    var cardsCompletedV = document.getElementById("cardsCompletedV");
+    var timeCompletedV = document.getElementById("timeCompletedV");
+    var displayCard = document.getElementById("displayCard");
+    var tutorial = document.getElementById("tutorial");
+    var progress = document.getElementById("progress");
+    var cardContainer = document.getElementById("cardContainer");
+
+    // State variables
+    var timeoutId = null;
+    var ms = 0;
+    var sec = 0;
+    var min = 0;
+    var cardNumber = 0;
+    var completedCards = 0;
+    var hasStartedExercise = false;
+    var hasPaused = false;
+
+    // Close welcome modal
+    function closeModal() {
+        document.getElementById('welcomeModal').classList.add('hidden');
+    }
+
+    const startExercise = () => {
+        var tutorialNumber = getTutorialNumber(cards[cardNumber]);
+        displayCard.src = "../cards/" + cards[cardNumber] + ".jpg";
+        tutorial.src = "../tutorials/" + tutorialNumber + ".mp4";
+        hasStartedExercise = true;
+    }
+
+    const nextCard = () => {
+        if (hasStartedExercise && !hasPaused) {
+            // Add flip animation
+            cardContainer.classList.add('flipping');
+            setTimeout(() => cardContainer.classList.remove('flipping'), 600);
+
+            cardNumber++;
+            completedCards++;
+            document.getElementById('cardsCompleted').innerHTML = completedCards;
+            cardsCompletedV.value = completedCards;
+
+            if (cardNumber > 0) {
+                finishBtn.disabled = false;
+            } else {
+                finishBtn.disabled = true;
+            }
+
+            if (cardNumber == 52) {
+                clearTimeout(timeoutId);
+                document.getElementById('finishBtn').click();
+            } else {
+                displayCard.src = "../cards/" + cards[cardNumber] + ".jpg";
+
+                var tutorialNumber = getTutorialNumber(cards[cardNumber]);
+                tutorial.src = "../tutorials/" + tutorialNumber + ".mp4";
+
+                const progressValue = Math.round((completedCards / 52) * 100);
+
+                // Update progress bar color based on completion
+                progress.classList.remove('bg-danger', 'bg-warning', 'bg-info', 'bg-success');
+                if (progressValue < 25) {
+                    progress.classList.add('bg-danger');
+                } else if (progressValue < 50) {
+                    progress.classList.add('bg-warning');
+                } else if (progressValue < 75) {
+                    progress.classList.add('bg-info');
+                } else {
+                    progress.classList.add('bg-success');
+                }
+
+                progress.innerHTML = progressValue + '%';
+                progress.ariaValueNow = progressValue + '%';
+                progress.style.width = progressValue + '%';
+            }
+        }
+    }
+
+    /* Start stopwatch */
+    function start(flag) {
+        if (flag) {
+            startBtn.disabled = true;
+        }
+
+        hasPaused = false;
+        if (tutorial.paused) {
+            tutorial.play();
+        }
+
+        timeoutId = setTimeout(function () {
+            ms = parseInt(ms);
+            sec = parseInt(sec);
+            min = parseInt(min);
+
+            ms++;
+
+            if (ms == 100) {
+                sec = sec + 1;
+                ms = 0;
+            }
+            if (sec == 60) {
+                min = min + 1;
+                sec = 0;
+            }
+            if (ms < 10) {
+                ms = '0' + ms;
+            }
+            if (sec < 10) {
+                sec = '0' + sec;
+            }
+            if (min < 10) {
+                min = '0' + min;
+            }
+
+            const timeElapsed = min + ':' + sec + ':' + ms;
+            stopwatch.innerHTML = timeElapsed;
+            timeCompletedV.value = min + 'm:' + sec + 's:' + ms + 'ms';
+
+            start();
+        }, 10);
+
+        pauseBtn.disabled = false;
+        resumeBtn.disabled = true;
+
+        if (cardNumber > 0) {
+            finishBtn.disabled = false;
+        } else {
+            finishBtn.disabled = true;
+        }
+    }
+
+    /* Pause stopwatch */
+    function pause() {
+        clearTimeout(timeoutId);
+        pauseBtn.disabled = true;
+        startBtn.disabled = true;
+        resumeBtn.disabled = false;
+        tutorial.pause();
+        hasPaused = true;
+    }
+</script>

@@ -1,0 +1,72 @@
+html {
+    background: #F5F5F5;
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background: #F5F5F5;
+}
+
+.login {
+    min-height: 100vh;
+}
+
+.bg-image {
+    background-image: url('https://image-prod.iol.co.za/resize/1456x145600/?source=https://xlibris.public.prod.oc.inl.infomaker.io:8443/opencontent/objects/58b1cab2-0b49-58a1-88be-f6080bc3af54&operation=CROP&offset=0x0&resize=1242x1369');
+    background-size: cover;
+    background-position: center;
+}
+
+.login-heading {
+    font-weight: 300;
+}
+
+.btn-login {
+    font-size: 0.9rem;
+    letter-spacing: 0.05rem;
+    padding: 0.75rem 1rem;
+}
+
+.checked {
+    color: orange;
+}
+
+.site-primary-color {
+    color: #FCB813;
+}
+
+.site-primary-bgcolor {
+    background-color: #FCB813;
+    color: white;
+}
+
+.site-secondary-bgcolor {
+    background-color: #8D8D8D;
+    color: white;
+}
+
+.site-logo-size {
+    width: 100px;
+}
+
+@font-face {
+    font-family: 'Clevio Regular';
+    src: local('Clevio Regular'), url('Clevio-Regular.woff') format('woff');
+}
+
+.site-font {
+    font-family: 'Clevio Regular';
+    font-weight: normal;
+}

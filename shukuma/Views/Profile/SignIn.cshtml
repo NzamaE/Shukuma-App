@@ -1,0 +1,52 @@
+﻿@model shukuma.domain.Models.SigninModel
+
+@{
+    ViewData["Title"] = "Sign In";
+    ViewData["IsSignedIn"] = "false";
+}
+
+<div class="container-fluid ps-md-0">
+    <div class="row g-0">
+        <div class="d-none d-md-flex col-md-4 col-lg-6 bg-image"></div>
+        <div class="col-md-8 col-lg-6">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-9 col-lg-8 mx-auto">
+                            <h3 class="login-heading mb-4 site-font">Welcome back to Shukuma</h3>
+
+                            <!-- Sign In Form -->
+                            <form asp-action="SignIn">
+                                @if (ViewData["Error"] != null)
+                                {
+                                    <div id="alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                        <button id="closeAlert" type="button" class="close btn-sm btn-danger" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <strong>Error</strong>: @ViewData["Error"]
+                                    </div>
+                                }
+
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control" asp-for="EmailAddress" placeholder="mail@shukuma.co.za">
+                                    <label asp-for="EmailAddress">Email address</label>
+                                    <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control" asp-for="Password" placeholder="Password">
+                                    <label asp-for="Password">Password</label>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button class="btn btn-lg site-primary-bgcolor btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

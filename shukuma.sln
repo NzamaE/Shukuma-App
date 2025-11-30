@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "shukuma", "shukuma\shukuma.csproj", "{DA3F8515-DA3B-4F6C-A3F3-930B3F07B399}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shukuma.api", "shukuma.api\shukuma.api.csproj", "{DA50BEBE-5AB4-4178-8E23-B7945B23A097}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shukuma.persistence.sqlserver", "shukuma.persistence.sqlserver\shukuma.persistence.sqlserver.csproj", "{70B42936-903C-4247-89D6-2E79D36F91A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shukuma.persistence.firebase", "shukuma.persistence.firebase\shukuma.persistence.firebase.csproj", "{309999B9-3165-4CB7-A909-9B68574B03C0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shukuma.domain", "shukuma.domain\shukuma.domain.csproj", "{C2B60513-2D8E-426F-8032-83ECA7456D15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "shukuma.application", "shukuma.application\shukuma.application.csproj", "{C46CBA77-FDB8-4804-B1F1-49D69E04F9E4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA3F8515-DA3B-4F6C-A3F3-930B3F07B399}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA3F8515-DA3B-4F6C-A3F3-930B3F07B399}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA3F8515-DA3B-4F6C-A3F3-930B3F07B399}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA3F8515-DA3B-4F6C-A3F3-930B3F07B399}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA50BEBE-5AB4-4178-8E23-B7945B23A097}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA50BEBE-5AB4-4178-8E23-B7945B23A097}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA50BEBE-5AB4-4178-8E23-B7945B23A097}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA50BEBE-5AB4-4178-8E23-B7945B23A097}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70B42936-903C-4247-89D6-2E79D36F91A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B42936-903C-4247-89D6-2E79D36F91A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70B42936-903C-4247-89D6-2E79D36F91A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70B42936-903C-4247-89D6-2E79D36F91A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{309999B9-3165-4CB7-A909-9B68574B03C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{309999B9-3165-4CB7-A909-9B68574B03C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{309999B9-3165-4CB7-A909-9B68574B03C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{309999B9-3165-4CB7-A909-9B68574B03C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2B60513-2D8E-426F-8032-83ECA7456D15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2B60513-2D8E-426F-8032-83ECA7456D15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2B60513-2D8E-426F-8032-83ECA7456D15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2B60513-2D8E-426F-8032-83ECA7456D15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C46CBA77-FDB8-4804-B1F1-49D69E04F9E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C46CBA77-FDB8-4804-B1F1-49D69E04F9E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C46CBA77-FDB8-4804-B1F1-49D69E04F9E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C46CBA77-FDB8-4804-B1F1-49D69E04F9E4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E95B6CE-7483-46BA-8D2A-52AFF2B1F419}
+	EndGlobalSection
+EndGlobal
