@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using shukuma.domain.Models;
 using shukuma.domain.Interfaces;
+using Google.Apis.Auth.OAuth2;
+using System.Text;
 
 namespace shukuma.persistence.firebase;
 
@@ -17,21 +19,44 @@ public static class DependencyInjection
         var fireStoreAppOptions = new FirestoreAppOptions();
         configuration.Bind(nameof(FirestoreAppOptions), fireStoreAppOptions);
 
-        var path = AppDomain.CurrentDomain.BaseDirectory + $"{fireStoreAppOptions.ProjectId}.json";
-
-        // DEBUG: Print the path
         Console.WriteLine($"=== FIREBASE SETUP ===");
-        Console.WriteLine($"Looking for credentials at: {path}");
-        Console.WriteLine($"File exists: {System.IO.File.Exists(path)}");
+        Console.WriteLine($"Project ID: {fireStoreAppOptions.ProjectId}");
 
-        if (!System.IO.File.Exists(path))
+        // Try to get credentials from environment variable first (for production/Render)
+        var firebaseCredentialsJson = Environment.GetEnvironmentVariable("FIREBASE_CREDENTIALS");
+        
+        if (!string.IsNullOrEmpty(firebaseCredentialsJson))
         {
-            throw new FileNotFoundException($"Firebase credentials file not found at: {path}");
+            Console.WriteLine("Using Firebase credentials from environment variable");
+            
+            // Write credentials to a temporary file for Google Cloud SDK
+            var tempPath = Path.Combine(Path.GetTempPath(), $"{fireStoreAppOptions.ProjectId}.json");
+            File.WriteAllText(tempPath, firebaseCredentialsJson);
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", tempPath);
+            
+            Console.WriteLine("✅ Firebase credentials loaded from environment variable");
+        }
+        else
+        {
+            // Fall back to file-based credentials (for local development)
+            var path = AppDomain.CurrentDomain.BaseDirectory + $"{fireStoreAppOptions.ProjectId}.json";
+            
+            Console.WriteLine($"Looking for credentials file at: {path}");
+            Console.WriteLine($"File exists: {System.IO.File.Exists(path)}");
+
+            if (!System.IO.File.Exists(path))
+            {
+                throw new FileNotFoundException(
+                    $"Firebase credentials not found. " +
+                    $"Either set FIREBASE_CREDENTIALS environment variable or " +
+                    $"place credentials file at: {path}"
+                );
+            }
+
+            Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
+            Console.WriteLine("✅ Firebase credentials loaded from file");
         }
 
-        Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", path);
-
-        Console.WriteLine($"Project ID: {fireStoreAppOptions.ProjectId}");
         Console.WriteLine($"Collection.User: {fireStoreAppOptions.Collection.User}");
         Console.WriteLine($"Collection.WorkoutSession: {fireStoreAppOptions.Collection.WorkoutSession}");
 
@@ -47,7 +72,7 @@ public static class DependencyInjection
             AuthDomain = $"{fireStoreAppOptions.ProjectId}.firebaseapp.com",
             Providers = new FirebaseAuthProvider[]
             {
-            new EmailProvider()
+                new EmailProvider()
             }
         }));
 
