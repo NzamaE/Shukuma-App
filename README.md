@@ -63,7 +63,7 @@ shukuma/
 └── Dockerfile                  # Container Configuration
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - .NET 6.0 SDK
@@ -162,6 +162,6 @@ MIT License - See LICENSE file for details
 
 ---
 
-⭐ **If you find this project interesting, consider giving it a star!**
+**If you find this project interesting, consider giving it a star!**
 
 *Last Updated: December 2024*
